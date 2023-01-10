@@ -74,6 +74,24 @@ public class BoilerplateAuto extends LinearOpMode
     ArrayList<Integer> TARGET_TAGS = new ArrayList<Integer>(3);
 
     AprilTagDetection tagOfInterest = null;
+    
+    double robotHeading = 0;
+    Orientation lastAngles = new Orientation();
+
+    double getAngle() {
+        Orientation currentAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double deltaAngle = currentAngle.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        robotHeading += deltaAngle;
+
+        lastAngles = currentAngle;
+        return robotHeading;
+    }
 
     @Override
     public void runOpMode()
